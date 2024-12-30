@@ -1,0 +1,86 @@
+services:
+    postgresql:
+        build:
+            context: ..
+            dockerfile: docker/postgresql/Dockerfile
+        container_name: database
+        restart: always
+        ports:
+            - "${DB_PORT}:${DB_PORT}"
+        environment:
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_HOST: ${DB_HOST}
+            POSTGRES_PORT: ${DB_PORT}
+            POSTGRES_USER: ${DB_USERNAME}
+        healthcheck:
+            test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}" ]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+        volumes:
+            - db_app:/var/lib/postgresql/data
+        networks:
+            - database
+    php:
+        build:
+            context: ./php
+            args:
+                TIMEZONE: ${TIMEZONE}
+        container_name: php
+        volumes:
+            - ../:/var/www/html
+        networks:
+            - app
+            - database
+            - message_queue
+    php-consumers:
+        build:
+            context: ./supervisor
+            args:
+                TIMEZONE: ${TIMEZONE}
+        container_name: consumers
+        volumes:
+            - ../:/var/www/html
+            - ./supervisor/consumers:/etc/supervisor.d
+        networks:
+            - message_queue
+            - database
+            - app
+        depends_on:
+            - rabbitmq
+            - postgresql
+    nginx:
+        build:
+            context: ./nginx
+        container_name: server
+        volumes:
+            - ../:/var/www/html
+        ports:
+            - "${SERVER_PORT}:${SERVER_PORT}"
+        networks:
+            - app
+            - database
+            - message_queue
+        env_file:
+            - .env.nginx.local
+    rabbitmq:
+        build:
+            context: ./rabbitmq
+        container_name: messenger
+        ports:
+            - "15672:15672"  # RabbitMQ Management UI
+            - "5672:5672"    # RabbitMQ Transport Port
+        networks:
+            - message_queue
+
+volumes:
+    db_app:
+
+networks:
+    app:
+        external: true
+    message_queue:
+        external: true
+    database:
+        external: true
