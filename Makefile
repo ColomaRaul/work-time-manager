@@ -1,4 +1,4 @@
-.PHONY: up bash init stop down bash-consumers composer-install
+.PHONY: up bash init stop down bash-consumers composer-install unit
 up:
 	cd docker && docker-compose up
 
@@ -16,6 +16,9 @@ down:
 
 composer-install:
 	cd docker && docker-compose run --rm php composer install
+
+unit:
+	cd docker && docker-compose exec php vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist
 
 init:
 	@docker network create app || true

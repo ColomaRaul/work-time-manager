@@ -2,7 +2,9 @@
 
 namespace App\Tests\Shared\Infrastructure\PhpUnit;
 
-final class UnitTestCase
+use PHPUnit\Framework\TestCase;
+
+class UnitTestCase extends TestCase
 {
 
 }

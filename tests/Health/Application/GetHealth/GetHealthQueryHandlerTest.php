@@ -2,7 +2,12 @@
 
 namespace App\Tests\Health\Application\GetHealth;
 
-final class GetHealthQueryHandlerTest
-{
+use App\Tests\Shared\Infrastructure\PhpUnit\UnitTestCase;
 
+final class GetHealthQueryHandlerTest extends UnitTestCase
+{
+    public function testGivenNothingWhenExecuteTestThenReturnOk(): void
+    {
+        $this->assertTrue(true);
+    }
 }
