@@ -6,7 +6,7 @@ use App\User\Domain\Finder\UserCriteria;
 
 interface UserRepositoryInterface
 {
-    public function byId(string $id);
+    public function byId(string $id): ?User;
 
     public function save(User $user): void;
 

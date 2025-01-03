@@ -9,8 +9,9 @@ use App\User\Domain\UserRepositoryInterface;
 
 final class PostgresUserRepository extends DoctrineRepository implements UserRepositoryInterface
 {
-    public function byId(string $id)
+    public function byId(string $id): ?User
     {
+        return $this->repository(User::class)->find($id);
     }
 
     public function save(User $user): void

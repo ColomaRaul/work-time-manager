@@ -1,10 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\User\Infrastructure\Api\Create;
+namespace App\User\Infrastructure\Api\Update;
 
-use Symfony\Component\Validator\Constraints as Assert;
-
-final readonly class CreateUserRequest
+final class UpdateUserRequest
 {
     public function __construct(
         #[Assert\NotBlank(message: 'Name is required')]

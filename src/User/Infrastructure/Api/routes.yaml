@@ -4,7 +4,16 @@ FindUser:
   methods: [GET]
 
 CreateUser:
-  path: /create
+  path: /
   controller: App\User\Infrastructure\Api\Create\CreateUserController
   methods: [POST]
 
+UpdateUser:
+  path: /{id}
+  controller: App\User\Infrastructure\Api\Update\UpdateUserController
+  methods: [PUT]
+
+DeleteUser:
+  path: /{id}
+  controller: App\User\Infrastructure\Api\Delete\DeleteUserController
+  methods: [DELETE]

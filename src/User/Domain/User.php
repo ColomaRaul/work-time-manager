@@ -38,9 +38,55 @@ final class User extends AggregateRoot implements \JsonSerializable
             new \DateTimeImmutable(),
         );
 
-//        $user->saveDomainEvent();
+//        $user->saveDomainEvent(); UserCreated
 
         return $user;
+    }
+
+    public function updateName(string $name): void
+    {
+        if ($this->name === $name) {
+            return;
+        }
+
+        $this->name = $name;
+        $this->updatedAt = new \DateTimeImmutable();
+
+        // save domain event // UserNameChanged
+    }
+
+    public function updateEmail(string $email): void
+    {
+        if ($this->email === $email) {
+            return;
+        }
+
+        $this->email = $email;
+        $this->updatedAt = new \DateTimeImmutable();
+
+        // save domain event // UserEmailChanged
+    }
+
+    public function updatePassword(string $password, PasswordHasherInterface $passwordHasher): void
+    {
+        if ($passwordHasher->check($password, $this->password)) {
+            return;
+        }
+
+        $this->password = $passwordHasher->hash($password);
+        $this->updatedAt = new \DateTimeImmutable();
+
+        // save domain event // UserPasswordChanged
+    }
+
+    public function delete(): void
+    {
+        if (null !== $this->deletedAt()) {
+            return;
+        }
+
+        $this->deletedAt = new \DateTimeImmutable();
+        // save domain event // UserDeleted
     }
 
     public function id(): Uuid
@@ -90,6 +136,7 @@ final class User extends AggregateRoot implements \JsonSerializable
             'name' => $this->name(),
             'email' => $this->email(),
             'role' => $this->role()->value,
+            'active' => null === $this->deletedAt(),
         ];
     }
 }
