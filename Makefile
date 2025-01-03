@@ -26,3 +26,5 @@ init:
 	@docker network create database || true
 	$(MAKE) up
 	$(MAKE) composer-install
+	@docker cd docker && docker-compose exec php bin/console doctrine:database:create --no-interaction
+	@docker cd docker && docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction

@@ -1,0 +1,10 @@
+FindUser:
+  path: /
+  controller: App\User\Infrastructure\Api\Find\FindUserController
+  methods: [GET]
+
+CreateUser:
+  path: /create
+  controller: App\User\Infrastructure\Api\Create\CreateUserController
+  methods: [POST]
+

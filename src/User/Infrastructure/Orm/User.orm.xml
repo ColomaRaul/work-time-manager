@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\User\Domain\User" table="auth_user">
+        <indexes>
+            <index columns="email"/>
+        </indexes>
+        <id name="id" type="App\Shared\Infrastructure\Orm\UuidType" />
+        <field name="name" />
+        <field name="email" />
+        <field name="password" />
+        <field name="role" type="App\User\Infrastructure\Orm\UserRoleType"/>
+        <field name="createdAt" type="App\Shared\Infrastructure\Orm\DateTimeType"/>
+        <field name="updatedAt" type="App\Shared\Infrastructure\Orm\DateTimeType"/>
+        <field name="deletedAt" type="App\Shared\Infrastructure\Orm\DateTimeType"/>
+    </entity>
+</doctrine-mapping>

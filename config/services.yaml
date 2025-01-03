@@ -17,13 +17,15 @@ services:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
     App\Shared\Infrastructure\Api\ApiController:
         arguments:
             $queryBus: '@messenger.bus.default'
             $commandBus: '@messenger.bus.command'
         tags: ['controller.service_arguments']
+
+    App\Shared\Infrastructure\Repository\DoctrineRepository:
+        class: App\Shared\Infrastructure\Repository\DoctrineRepository
+        arguments:
+            - '@doctrine.orm.default_entity_manager'

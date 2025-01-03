@@ -1,4 +1,9 @@
 Health:
-    prefix: /api/v1
+    prefix: /api
     resource: ../src/Health/Infrastructure/Api/routes.yaml
+    trailing_slash_on_root: false
+
+User:
+    prefix: /api/user
+    resource: ../src/User/Infrastructure/Api/routes.yaml
     trailing_slash_on_root: false

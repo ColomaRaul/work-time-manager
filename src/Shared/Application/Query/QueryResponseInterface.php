@@ -4,5 +4,5 @@ namespace App\Shared\Application\Query;
 
 interface QueryResponseInterface
 {
-
+    public function data(): array;
 }
