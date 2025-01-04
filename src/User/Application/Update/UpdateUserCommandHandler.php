@@ -7,7 +7,7 @@ use App\User\Domain\Updater\UserUpdater;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-final class UpdateUserCommandHandler implements CommandHandlerInterface
+final readonly class UpdateUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private UserUpdater $updater,

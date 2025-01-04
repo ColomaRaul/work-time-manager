@@ -4,7 +4,6 @@ namespace App\User\Application\Find;
 
 use App\Shared\Application\Query\QueryHandlerInterface;
 use App\User\Domain\Finder\UserFinder;
-use App\User\Domain\Finder\UserCriteria;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]

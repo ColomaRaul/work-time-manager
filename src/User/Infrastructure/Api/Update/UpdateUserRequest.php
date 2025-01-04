@@ -2,6 +2,8 @@
 
 namespace App\User\Infrastructure\Api\Update;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 final class UpdateUserRequest
 {
     public function __construct(

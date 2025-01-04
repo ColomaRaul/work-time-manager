@@ -1,30 +1,30 @@
 <?php declare(strict_types=1);
 
-namespace App\User\Infrastructure\Api\Update;
+namespace App\WorkEntry\Infrastructure\Api\Update;
 
 use App\Shared\Infrastructure\Api\ApiController;
-use App\User\Application\Update\UpdateUserCommand;
+use App\WorkEntry\Application\Update\UpdateWorkEntryCommand;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Throwable;
 
-final class UpdateUserController extends ApiController
+final class UpdateWorkEntryController extends ApiController
 {
     /**
      * @throws Throwable
      */
     public function __invoke(
         string $id,
-        #[MapRequestPayload] UpdateUserRequest $request,
+        #[MapRequestPayload] UpdateWorkEntryRequest $request,
     ): JsonResponse
     {
         $this->dispatch(
-            new UpdateUserCommand(
+            new UpdateWorkEntryCommand(
                 $id,
-                $request->name,
-                $request->email,
-                $request->password,
+                $request->userId,
+                $request->startDate,
+                $request->endDate,
             )
         );
 

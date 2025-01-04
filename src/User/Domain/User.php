@@ -5,6 +5,7 @@ namespace App\User\Domain;
 use App\Shared\Domain\AggregateRoot;
 use App\Shared\Domain\PasswordHasherInterface;
 use App\Shared\Domain\ValueObject\Uuid;
+use DateTimeImmutable;
 use DateTimeInterface;
 
 final class User extends AggregateRoot implements \JsonSerializable
@@ -34,8 +35,8 @@ final class User extends AggregateRoot implements \JsonSerializable
             $passwordHasher->hash($password),
             $name,
             UserRole::USER,
-            new \DateTimeImmutable(),
-            new \DateTimeImmutable(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable(),
         );
 
 //        $user->saveDomainEvent(); UserCreated
@@ -50,7 +51,7 @@ final class User extends AggregateRoot implements \JsonSerializable
         }
 
         $this->name = $name;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
 
         // save domain event // UserNameChanged
     }
@@ -62,7 +63,7 @@ final class User extends AggregateRoot implements \JsonSerializable
         }
 
         $this->email = $email;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
 
         // save domain event // UserEmailChanged
     }
@@ -74,7 +75,7 @@ final class User extends AggregateRoot implements \JsonSerializable
         }
 
         $this->password = $passwordHasher->hash($password);
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
 
         // save domain event // UserPasswordChanged
     }
@@ -85,7 +86,7 @@ final class User extends AggregateRoot implements \JsonSerializable
             return;
         }
 
-        $this->deletedAt = new \DateTimeImmutable();
+        $this->deletedAt = new DateTimeImmutable();
         // save domain event // UserDeleted
     }
 

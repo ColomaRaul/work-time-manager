@@ -27,6 +27,12 @@ doctrine:
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/User/Infrastructure/Refresh'
                 prefix: 'App\User\Infrastructure\Refresh'
+            WorkEntry:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/WorkEntry/Infrastructure/Orm'
+                prefix: 'App\WorkEntry\Domain'
+                alias: WorkEntry
         controller_resolver:
             auto_mapping: false
 

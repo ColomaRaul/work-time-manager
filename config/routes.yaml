@@ -7,3 +7,8 @@ User:
     prefix: /api/user
     resource: ../src/User/Infrastructure/Api/routes.yaml
     trailing_slash_on_root: false
+
+WorkEntry:
+    prefix: /api/work-entry
+    resource: ../src/WorkEntry/Infrastructure/Api/routes.yaml
+    trailing_slash_on_root: false
