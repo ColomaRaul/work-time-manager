@@ -8,18 +8,29 @@ security:
         custom_provider:
             id: App\User\Infrastructure\Security\SecurityUserProvider
 
+
     firewalls:
         login:
-            pattern: ^/api/auth/(login|token/refresh)
+            pattern: ^/api/(login|token/refresh)
             stateless: true
             json_login:
-                check_path: /api/auth/login
+                check_path: /api/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             refresh_jwt:
-                check_path: /api/auth/token/refresh
+                check_path: /api/token/refresh
         api:
             pattern: ^/api
             stateless: true
             jwt: ~
             logout:
+                path: api_token_invalidate
+
+    access_control:
+        - { path: ^/api/login,                    roles: PUBLIC_ACCESS }
+        - { path: ^/api/token/refresh,            roles: PUBLIC_ACCESS }
+        - { path: ^/api/me,                       roles: [ ROLE_USER, ROLE_ADMIN ] }
+        - { path: ^/api,                          roles: ROLE_ADMIN }
+        - { path: ^/api/time-tracking/user/work-entry, roles: [ ROLE_USER, ROLE_ADMIN ] }
+        - { path: ^/api/time-tracking/work-entry,      roles: [ ROLE_ADMIN ] }
+        - { path: ^/api,                               roles: [ ROLE_USER, ROLE_ADMIN ] }

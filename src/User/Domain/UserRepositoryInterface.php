@@ -8,6 +8,8 @@ interface UserRepositoryInterface
 {
     public function byId(string $id): ?User;
 
+    public function byEmail(string $email): ?User;
+
     public function save(User $user): void;
 
     public function byCriteria(UserCriteria $criteria): array;

@@ -9,7 +9,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class SecurityUser implements UserInterface, EquatableInterface, PasswordAuthenticatedUserInterface
 {
-
     public string $id;
     public string $email;
     public string $name;
@@ -18,11 +17,11 @@ final class SecurityUser implements UserInterface, EquatableInterface, PasswordA
 
     public function __construct(User $user)
     {
-        $this->id = $user->id();
+        $this->id = $user->id()->value();
         $this->email = $user->email();
         $this->name = $user->name();
         $this->password = $user->password();
-        $this->roles = [$user->role()];
+        $this->roles = [$user->role()->value];
     }
 
     public function isEqualTo(UserInterface $user): bool

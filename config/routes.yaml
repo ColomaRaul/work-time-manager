@@ -12,3 +12,12 @@ WorkEntry:
     prefix: /api/work-entry
     resource: ../src/WorkEntry/Infrastructure/Api/routes.yaml
     trailing_slash_on_root: false
+
+api_login_check:
+    path: /api/login
+
+api_refresh_token:
+    path: /api/token/refresh
+
+api_token_invalidate:
+    path: /api/token/invalidate

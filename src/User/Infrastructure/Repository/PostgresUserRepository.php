@@ -14,6 +14,11 @@ final class PostgresUserRepository extends DoctrineRepository implements UserRep
         return $this->repository(User::class)->find($id);
     }
 
+    public function byEmail(string $email): ?User
+    {
+        return $this->repository(User::class)->findOneBy(['email' => $email]);
+    }
+
     public function save(User $user): void
     {
         try {

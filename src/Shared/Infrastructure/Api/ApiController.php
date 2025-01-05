@@ -5,11 +5,12 @@ namespace App\Shared\Infrastructure\Api;
 use App\Shared\Application\Command\CommandInterface;
 use App\Shared\Application\Query\QueryInterface;
 use App\Shared\Application\Query\QueryResponseInterface;
+use App\User\Infrastructure\Security\SecurityUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Throwable;
 
 abstract class ApiController extends AbstractController
@@ -17,6 +18,7 @@ abstract class ApiController extends AbstractController
     public function __construct(
         private readonly MessageBusInterface $queryBus,
         private readonly MessageBusInterface $commandBus,
+        private readonly TokenStorageInterface $tokenStorage,
     ) {}
 
     /**
@@ -58,8 +60,20 @@ abstract class ApiController extends AbstractController
         }
     }
 
-    protected function getContentBody(Request $request): array
+    protected function getAuthenticatedUser(): ?SecurityUser
     {
-        return json_decode($request->getContent(), true);
+        $token = $this->tokenStorage->getToken();
+
+        if (null === $token) {
+            return null;
+        }
+
+        /** @var SecurityUser $user */
+        $user = $token->getUser();
+        if (!$user instanceof SecurityUser) {
+            return null;
+        }
+
+        return $user;
     }
 }
