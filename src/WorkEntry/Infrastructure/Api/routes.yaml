@@ -27,3 +27,8 @@ FinishUserWorkEntry:
   path: /user/finish/{id}
   controller: App\WorkEntry\Infrastructure\Api\User\Finish\UserFinishWorkEntryController
   methods: [POST]
+
+FindUserWorkEntry:
+  path: /user
+  controller: App\WorkEntry\Infrastructure\Api\User\Find\UserFindWorkEntryController
+  methods: [GET]
