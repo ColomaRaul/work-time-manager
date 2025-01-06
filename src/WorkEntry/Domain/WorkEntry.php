@@ -4,6 +4,13 @@ namespace App\WorkEntry\Domain;
 
 use App\Shared\Domain\AggregateRoot;
 use App\Shared\Domain\ValueObject\Uuid;
+use App\WorkEntry\Domain\Event\WorkEntryCreated;
+use App\WorkEntry\Domain\Event\WorkEntryDeleted;
+use App\WorkEntry\Domain\Event\WorkEntryEndDateUpdated;
+use App\WorkEntry\Domain\Event\WorkEntryFinished;
+use App\WorkEntry\Domain\Event\WorkEntryStartDateUpdated;
+use App\WorkEntry\Domain\Event\WorkEntryStarted;
+use App\WorkEntry\Domain\Event\WorkEntryUserIdUpdated;
 use DateTimeImmutable;
 
 final class WorkEntry extends AggregateRoot implements \JsonSerializable
@@ -20,15 +27,24 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
 
     public static function createWorkEntry(string $userId): self
     {
+        $id = Uuid::random();
         $workEntry = new self(
-            Uuid::random(),
+            $id,
             Uuid::from($userId),
             WorkEntryTime::initialize(),
             new DateTimeImmutable(),
             new DateTimeImmutable(),
         );
 
-        // $workEntry->saveDomainEvent(); WorkEntryCreated
+        $workEntry->saveDomainEvent(WorkEntryCreated::from(
+            $id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $id->value(),
+                'userId' => $userId,
+                'startAt' => $workEntry->workEntryTime->start()->format(\DateTimeInterface::ATOM),
+            ]
+        ));
 
         return $workEntry;
     }
@@ -43,7 +59,15 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
             new DateTimeImmutable(),
         );
 
-        // $workEntry->saveDomainEvent(); WorkEntryStarted
+        $workEntry->saveDomainEvent(WorkEntryStarted::from(
+            $workEntryId->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $workEntryId->value(),
+                'userId' => $userId->value(),
+                'startAt' => $workEntry->workEntryTime->start()->format(\DateTimeInterface::ATOM),
+            ]
+        ));
 
         return $workEntry;
     }
@@ -56,7 +80,17 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
 
         $this->workEntryTime = $this->workEntryTime()->updateEnd(new DateTimeImmutable());
         $this->updatedAt = new DateTimeImmutable();
-        // $this->saveDomainEvent(); WorkEntryFinished
+
+        $this->saveDomainEvent(WorkEntryFinished::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $this->id->value(),
+                'userId' => $this->userId->value(),
+                'startAt' => $this->workEntryTime->start()->format(\DateTimeInterface::ATOM),
+                'endAt' => $this->workEntryTime->end()->format(\DateTimeInterface::ATOM),
+            ]
+        ));
     }
 
     public function updateUserId(string $userId): void
@@ -67,7 +101,15 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
 
         $this->userId = Uuid::from($userId);
         $this->updatedAt = new DateTimeImmutable();
-        // $this->saveDomainEvent(); WorkEntryUserIdChanged
+
+        $this->saveDomainEvent(WorkEntryUserIdUpdated::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $this->id->value(),
+                'userId' => $userId,
+            ]
+        ));
     }
 
     /**
@@ -81,7 +123,15 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
 
         $this->workEntryTime = $this->workEntryTime->updateStart(new \DateTimeImmutable($startDate));
         $this->updatedAt = new DateTimeImmutable();
-        // $this->saveDomainEvent(); WorkEntryStartDateChanged
+        $this->saveDomainEvent(WorkEntryStartDateUpdated::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $this->id->value(),
+                'userId' => $this->userId->value(),
+                'startAt' => $this->workEntryTime->start()->format(\DateTimeInterface::ATOM),
+            ]
+        ));
     }
 
     /**
@@ -101,7 +151,15 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
 
         $this->workEntryTime = $this->workEntryTime->updateEnd(new \DateTimeImmutable($endDate));
         $this->updatedAt = new DateTimeImmutable();
-        // $this->saveDomainEvent(); WorkEntryEndDateChanged
+        $this->saveDomainEvent(WorkEntryEndDateUpdated::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $this->id->value(),
+                'userId' => $this->userId->value(),
+                'endAt' => $this->workEntryTime->end()->format(\DateTimeInterface::ATOM),
+            ]
+        ));
     }
 
     public function delete(): void
@@ -111,7 +169,14 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
         }
 
         $this->deletedAt = new DateTimeImmutable();
-        // $this->saveDomainEvent(); WorkEntryDeleted
+        $this->saveDomainEvent(WorkEntryDeleted::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $this->id->value(),
+                'userId' => $this->userId->value(),
+            ]
+        ));
     }
 
     public function id(): Uuid

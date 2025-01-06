@@ -3,20 +3,23 @@
 namespace App\WorkEntry\Application\Update;
 
 use App\Shared\Application\Command\CommandHandlerInterface;
+use App\Shared\Application\Event\DomainEventPublisher;
 use App\WorkEntry\Domain\Updater\WorkEntryUpdater;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Throwable;
 
 #[AsMessageHandler]
 final readonly class UpdateWorkEntryCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
-        private WorkEntryUpdater $updater
+        private WorkEntryUpdater $updater,
+        private DomainEventPublisher $publisher
     )
     {
     }
 
     /**
-     * @throws \DateMalformedStringException
+     * @throws Throwable
      */
     public function __invoke(UpdateWorkEntryCommand $command): void
     {
@@ -26,5 +29,7 @@ final readonly class UpdateWorkEntryCommandHandler implements CommandHandlerInte
             $command->startDate(),
             $command->endDate()
         );
+
+        $this->publisher->publish($this->updater->publishedEvents());
     }
 }

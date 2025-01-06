@@ -2,12 +2,13 @@
 
 namespace App\WorkEntry\Domain\Updater;
 
+use App\Shared\Domain\DomainActions;
 use App\WorkEntry\Domain\WorkEntryRepositoryInterface;
 
-final readonly class WorkEntryUpdater
+final class WorkEntryUpdater extends DomainActions
 {
     public function __construct(
-        private WorkEntryRepositoryInterface $repository,
+        private readonly WorkEntryRepositoryInterface $repository,
     )
     {
     }
@@ -29,6 +30,6 @@ final readonly class WorkEntryUpdater
         $workEntry->updateEndDate($endDate);
 
         $this->repository->save($workEntry);
-        //Publish all events
+        $this->publishedEvents = $workEntry->pullDomainEvents();
     }
 }

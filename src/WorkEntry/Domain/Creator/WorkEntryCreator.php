@@ -2,23 +2,23 @@
 
 namespace App\WorkEntry\Domain\Creator;
 
+use App\Shared\Domain\DomainActions;
 use App\WorkEntry\Domain\WorkEntry;
 use App\WorkEntry\Domain\WorkEntryRepositoryInterface;
 
-final class WorkEntryCreator
+final class WorkEntryCreator extends DomainActions
 {
     public function __construct(
-        private WorkEntryRepositoryInterface $repository
+        private readonly WorkEntryRepositoryInterface $repository
     )
     {
     }
 
     public function create(string $userId): void
     {
-        $this->repository->save(
-            WorkEntry::createWorkEntry(
-                $userId
-            )
-        );
+        $workEntry = WorkEntry::createWorkEntry($userId);
+        $this->repository->save($workEntry);
+
+        $this->publishedEvents = $workEntry->pullDomainEvents();
     }
 }

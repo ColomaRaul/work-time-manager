@@ -2,14 +2,15 @@
 
 namespace App\WorkEntry\Domain\Starter;
 
+use App\Shared\Domain\DomainActions;
 use App\Shared\Domain\ValueObject\Uuid;
 use App\WorkEntry\Domain\WorkEntry;
 use App\WorkEntry\Domain\WorkEntryRepositoryInterface;
 
-final readonly class WorkEntryStarter
+final class WorkEntryStarter extends DomainActions
 {
     public function __construct(
-        private WorkEntryRepositoryInterface $repository,
+        private readonly WorkEntryRepositoryInterface $repository,
     )
     {
     }
@@ -22,15 +23,13 @@ final readonly class WorkEntryStarter
             throw new \Exception('Error getting work entries');
         }
 
-
         if (!empty($workEntries)) {
-            //TODO create own exceptions
             throw new \Exception('User has an active work entry');
         }
 
         $workEntry = WorkEntry::start($workEntryId, $userId);
 
         $this->repository->save($workEntry);
-        // TODO Publish all events
+        $this->publishedEvents = $workEntry->pullDomainEvents();
     }
 }

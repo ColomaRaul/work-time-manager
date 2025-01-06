@@ -2,12 +2,13 @@
 
 namespace App\WorkEntry\Domain\Finisher;
 
+use App\Shared\Domain\DomainActions;
 use App\Shared\Domain\ValueObject\Uuid;
 use App\WorkEntry\Domain\WorkEntryRepositoryInterface;
 
-final readonly class WorkEntryFinisher
+final class WorkEntryFinisher extends DomainActions
 {
-    public function __construct(private WorkEntryRepositoryInterface $repository)
+    public function __construct(private readonly WorkEntryRepositoryInterface $repository)
     {
     }
 
@@ -26,6 +27,6 @@ final readonly class WorkEntryFinisher
         $workEntry->finish();
         $this->repository->save($workEntry);
 
-        //TODO publish all events
+        $this->publishedEvents = $workEntry->pullDomainEvents();
     }
 }

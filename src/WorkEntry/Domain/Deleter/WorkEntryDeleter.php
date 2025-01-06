@@ -2,12 +2,13 @@
 
 namespace App\WorkEntry\Domain\Deleter;
 
+use App\Shared\Domain\DomainActions;
 use App\WorkEntry\Domain\WorkEntryRepositoryInterface;
 
-final readonly class WorkEntryDeleter
+final class WorkEntryDeleter extends DomainActions
 {
     public function __construct(
-        private WorkEntryRepositoryInterface $repository,
+        private readonly WorkEntryRepositoryInterface $repository,
     )
     {
     }
@@ -18,6 +19,6 @@ final readonly class WorkEntryDeleter
         $workEntry->delete();
 
         $this->repository->save($workEntry);
-        //Launch all events
+        $this->publishedEvents = $workEntry->pullDomainEvents();
     }
 }
