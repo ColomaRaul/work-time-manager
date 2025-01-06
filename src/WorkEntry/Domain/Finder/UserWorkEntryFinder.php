@@ -12,8 +12,8 @@ final readonly class UserWorkEntryFinder
 
     public function find(
         string $userId,
-        ?int $limit,
-        ?int $offset
+        ?int $limit = null,
+        ?int $offset = null
     ): array
     {
         return $this->repository->byCriteria(
