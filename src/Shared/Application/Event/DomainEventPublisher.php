@@ -3,8 +3,9 @@
 namespace App\Shared\Application\Event;
 
 use App\Shared\Domain\Event\DomainEvent;
-use Symfony\Component\Messenger\Exception\ExceptionInterface;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Throwable;
 
 final readonly class DomainEventPublisher
 {
@@ -14,12 +15,20 @@ final readonly class DomainEventPublisher
 
     /**
      * @param DomainEvent[] $events
-     * @throws ExceptionInterface
+     * @throws Throwable
      */
     public function publish(array $events): void
     {
-        foreach ($events as $event) {
-            $this->eventBus->dispatch($event);
+        try {
+            foreach ($events as $event) {
+                $this->eventBus->dispatch($event);
+            }
+        } catch (Throwable $e) {
+            while ($e instanceof HandlerFailedException) {
+                $e = $e->getPrevious();
+            }
+
+            throw $e;
         }
     }
 }

@@ -2,12 +2,13 @@
 
 namespace App\User\Domain\Deleter;
 
+use App\Shared\Domain\DomainActions;
 use App\User\Domain\UserRepositoryInterface;
 
-final class UserDeleter
+final class UserDeleter extends DomainActions
 {
     public function __construct(
-        private UserRepositoryInterface $repository,
+        private readonly UserRepositoryInterface $repository,
     ) {
     }
 
@@ -17,6 +18,6 @@ final class UserDeleter
         $user->delete();
 
         $this->repository->save($user);
-        //Launch all events
+        $this->publishedEvents = $user->pullDomainEvents();
     }
 }

@@ -2,14 +2,15 @@
 
 namespace App\User\Domain\Updater;
 
+use App\Shared\Domain\DomainActions;
 use App\Shared\Domain\PasswordHasherInterface;
 use App\User\Domain\UserRepositoryInterface;
 
-final class UserUpdater
+final class UserUpdater extends DomainActions
 {
     public function __construct(
-        private UserRepositoryInterface $repository,
-        private PasswordHasherInterface $passwordHasher
+        private readonly UserRepositoryInterface $repository,
+        private readonly PasswordHasherInterface $passwordHasher
     ) {
     }
 
@@ -26,6 +27,6 @@ final class UserUpdater
         $user->updatePassword($password, $this->passwordHasher);
 
         $this->repository->save($user);
-        //Publish all events
+        $this->publishedEvents = $user->pullDomainEvents();
     }
 }

@@ -6,6 +6,10 @@ use App\Shared\Domain\AggregateRoot;
 use App\Shared\Domain\PasswordHasherInterface;
 use App\Shared\Domain\ValueObject\Uuid;
 use App\User\Domain\Event\UserCreated;
+use App\User\Domain\Event\UserDeleted;
+use App\User\Domain\Event\UserEmailUpdated;
+use App\User\Domain\Event\UserNameUpdated;
+use App\User\Domain\Event\UserPasswordUpdated;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -21,7 +25,6 @@ final class User extends AggregateRoot implements \JsonSerializable
         private DateTimeInterface $updatedAt,
         private ?DateTimeInterface $deletedAt = null,
     ) {
-
     }
 
     public static function createUser(
@@ -63,7 +66,13 @@ final class User extends AggregateRoot implements \JsonSerializable
         $this->name = $name;
         $this->updatedAt = new DateTimeImmutable();
 
-        // save domain event // UserNameChanged
+        $this->saveDomainEvent(UserNameUpdated::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'name' => $name,
+            ]
+        ));
     }
 
     public function updateEmail(string $email): void
@@ -75,7 +84,13 @@ final class User extends AggregateRoot implements \JsonSerializable
         $this->email = $email;
         $this->updatedAt = new DateTimeImmutable();
 
-        // save domain event // UserEmailChanged
+        $this->saveDomainEvent(UserEmailUpdated::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'email' => $email,
+            ]
+        ));
     }
 
     public function updatePassword(string $password, PasswordHasherInterface $passwordHasher): void
@@ -87,7 +102,10 @@ final class User extends AggregateRoot implements \JsonSerializable
         $this->password = $passwordHasher->hash($password);
         $this->updatedAt = new DateTimeImmutable();
 
-        // save domain event // UserPasswordChanged
+        $this->saveDomainEvent(UserPasswordUpdated::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+        ));
     }
 
     public function delete(): void
@@ -97,7 +115,14 @@ final class User extends AggregateRoot implements \JsonSerializable
         }
 
         $this->deletedAt = new DateTimeImmutable();
-        // save domain event // UserDeleted
+        $this->saveDomainEvent(UserDeleted::from(
+            $this->id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'name' => $this->name,
+                'email' => $this->email,
+            ]
+        ));
     }
 
     public function id(): Uuid
