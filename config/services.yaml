@@ -19,12 +19,19 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Kernel.php'
 
+    ## BUSES
     App\Shared\Infrastructure\Api\ApiController:
         arguments:
             $queryBus: '@messenger.bus.default'
             $commandBus: '@messenger.bus.command'
         tags: ['controller.service_arguments']
 
+    App\Shared\Application\Event\DomainEventPublisher:
+        arguments:
+            $eventBus: '@messenger.bus.event'
+        #tags: ['event_enricher']
+
+    ## REPOSITORIES
     App\Shared\Infrastructure\Repository\DoctrineRepository:
         class: App\Shared\Infrastructure\Repository\DoctrineRepository
         arguments:

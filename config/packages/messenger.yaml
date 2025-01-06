@@ -6,6 +6,7 @@ framework:
         buses:
             messenger.bus.default: ~
             messenger.bus.command: ~
+            messenger.bus.event: ~
 
         serializer:
             default_serializer: messenger.transport.symfony_serializer
@@ -22,14 +23,19 @@ framework:
                     queues:
                         command:
                             binding_keys: [ 'command_key' ]
-            # https://symfony.com/doc/current/messenger.html#transport-configuration
-            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # failed: 'doctrine://default?queue_name=failed'
-            # sync: 'sync://'
+            event:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    exchange:
+                        name: 'event_exchange'
+                    queues:
+                        event:
+                            binding_keys: [ 'event_key' ]
 
         routing:
             # Route your messages to the transports
             'App\Shared\Application\Command\CommandInterface': command
+            'App\Shared\Domain\Event\EventInterface': event
 
 # when@test:
 #    framework:

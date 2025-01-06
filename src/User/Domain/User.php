@@ -5,6 +5,7 @@ namespace App\User\Domain;
 use App\Shared\Domain\AggregateRoot;
 use App\Shared\Domain\PasswordHasherInterface;
 use App\Shared\Domain\ValueObject\Uuid;
+use App\User\Domain\Event\UserCreated;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -29,8 +30,9 @@ final class User extends AggregateRoot implements \JsonSerializable
         string $name,
         PasswordHasherInterface $passwordHasher,
     ): self {
+        $id = Uuid::random();
         $user = new self(
-            Uuid::random(),
+            $id,
             $email,
             $passwordHasher->hash($password),
             $name,
@@ -39,7 +41,15 @@ final class User extends AggregateRoot implements \JsonSerializable
             new DateTimeImmutable(),
         );
 
-//        $user->saveDomainEvent(); UserCreated
+        $user->saveDomainEvent(UserCreated::from(
+            $id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $id->value(),
+                'email' => $email,
+                'name' => $name,
+            ]
+        ));
 
         return $user;
     }

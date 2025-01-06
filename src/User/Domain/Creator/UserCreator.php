@@ -2,18 +2,17 @@
 
 namespace App\User\Domain\Creator;
 
+use App\Shared\Domain\DomainActions;
 use App\Shared\Domain\PasswordHasherInterface;
-use App\Shared\Domain\ValueObject\Uuid;
 use App\User\Domain\User;
 use App\User\Domain\UserRepositoryInterface;
 
-final readonly class UserCreator
+final class UserCreator extends DomainActions
 {
     public function __construct(
-        private UserRepositoryInterface $repository,
-        private PasswordHasherInterface $passwordHasher
-    )
-    {
+        private readonly UserRepositoryInterface $repository,
+        private readonly PasswordHasherInterface $passwordHasher,
+    ) {
     }
 
     public function create(
@@ -21,13 +20,14 @@ final readonly class UserCreator
         string $email,
         string $password,
     ): void {
-        $this->repository->save(
-            User::createUser(
-                $email,
-                $password,
-                $name,
-                $this->passwordHasher
-            )
+        $user = User::createUser(
+            $email,
+            $password,
+            $name,
+            $this->passwordHasher
         );
+
+        $this->repository->save($user);
+        $this->publishedEvents = $user->pullDomainEvents();
     }
 }
