@@ -6,6 +6,7 @@
 
     <embeddable name="App\WorkEntry\Domain\WorkEntryTime">
         <field name="start" type="App\Shared\Infrastructure\Orm\DateTimeType" column="start_date"/>
-        <field name="end" type="App\Shared\Infrastructure\Orm\DateTimeType" column="end_date"/>
+        <field name="end" type="App\Shared\Infrastructure\Orm\DateTimeType" column="end_date" nullable="true"/>
     </embeddable>
 </doctrine-mapping>
+

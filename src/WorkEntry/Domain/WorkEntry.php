@@ -33,6 +33,32 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
         return $workEntry;
     }
 
+    public static function start(Uuid $workEntryId, Uuid $userId): self
+    {
+        $workEntry = new self(
+            $workEntryId,
+            $userId,
+            WorkEntryTime::initialize(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable(),
+        );
+
+        // $workEntry->saveDomainEvent(); WorkEntryStarted
+
+        return $workEntry;
+    }
+
+    public function finish(): void
+    {
+        if (null !== $this->workEntryTime->end()) {
+//            throw new WorkEntryIsFinished();
+        }
+
+        $this->workEntryTime = $this->workEntryTime()->updateEnd(new DateTimeImmutable());
+        $this->updatedAt = new DateTimeImmutable();
+        // $this->saveDomainEvent(); WorkEntryFinished
+    }
+
     public function updateUserId(string $userId): void
     {
         if ($this->userId->value() === $userId) {

@@ -27,6 +27,11 @@ final class Uuid implements Stringable
         return $this->value;
     }
 
+    public function equals(self $otherUuid): bool
+    {
+        return $otherUuid->value() === $this->value;
+    }
+
     public function __toString(): string
     {
         return $this->value();

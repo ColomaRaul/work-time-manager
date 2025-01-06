@@ -19,8 +19,6 @@ final class PostgresWorkEntryRepository extends DoctrineRepository implements Wo
         try {
             $this->persist($workEntry);
         } catch (\Exception $e) {
-            print_r($e->getMessage());
-            die('dead here');
             throw new \Exception($e->getMessage());
         }
     }

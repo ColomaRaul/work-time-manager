@@ -17,3 +17,13 @@ DeleteWorkEntry:
   path: /{id}
   controller: App\WorkEntry\Infrastructure\Api\Delete\DeleteWorkEntryController
   methods: [DELETE]
+
+StartUserWorkEntry:
+  path: /user/start
+  controller: App\WorkEntry\Infrastructure\Api\User\Start\UserStartWorkEntryController
+  methods: [POST]
+
+FinishUserWorkEntry:
+  path: /user/finish/{id}
+  controller: App\WorkEntry\Infrastructure\Api\User\Finish\UserFinishWorkEntryController
+  methods: [POST]
