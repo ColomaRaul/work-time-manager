@@ -25,6 +25,7 @@ final class CreateUserAdminConsoleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $output->writeln('Creating new admin user... please, fill the following fields:');
         $io = new SymfonyStyle($input, $output);
         $id = Uuid::random()->value();
         $name = $io->ask('Name');
