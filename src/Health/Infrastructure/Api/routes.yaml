@@ -1,4 +1,0 @@
-GetHealth:
-  path: /health
-  controller: App\Health\Infrastructure\Api\GetHealthController
-  methods: [GET]
