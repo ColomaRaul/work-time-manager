@@ -18,7 +18,7 @@ final class SecurityUser implements UserInterface, EquatableInterface, PasswordA
     public function __construct(User $user)
     {
         $this->id = $user->id()->value();
-        $this->email = $user->email();
+        $this->email = $user->email()->value();
         $this->name = $user->name();
         $this->password = $user->password();
         $this->roles = [$user->role()->value];

@@ -3,7 +3,7 @@
 namespace App\WorkEntry\Infrastructure\Api\User\Finish;
 
 use App\Shared\Infrastructure\Api\ApiController;
-use App\WorkEntry\Application\User\End\UserFinishWorkEntryCommand;
+use App\WorkEntry\Application\User\Finish\UserFinishWorkEntryCommand;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

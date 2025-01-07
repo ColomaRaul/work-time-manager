@@ -7,6 +7,7 @@ doctrine:
             App\Shared\Infrastructure\Orm\UuidType: App\Shared\Infrastructure\Orm\UuidType
             App\Shared\Infrastructure\Orm\DateTimeType: App\Shared\Infrastructure\Orm\DateTimeType
             App\User\Infrastructure\Orm\UserRoleType: App\User\Infrastructure\Orm\UserRoleType
+            App\User\Infrastructure\Orm\UserEmailType: App\User\Infrastructure\Orm\UserEmailType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true

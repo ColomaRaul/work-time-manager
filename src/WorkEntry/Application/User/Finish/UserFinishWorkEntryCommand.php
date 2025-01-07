@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\WorkEntry\Application\User\End;
+namespace App\WorkEntry\Application\User\Finish;
 
 use App\Shared\Application\Command\CommandInterface;
 

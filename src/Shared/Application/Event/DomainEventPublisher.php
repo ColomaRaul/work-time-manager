@@ -7,7 +7,7 @@ use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Throwable;
 
-final readonly class DomainEventPublisher
+readonly class DomainEventPublisher
 {
     public function __construct(private MessageBusInterface $eventBus)
     {

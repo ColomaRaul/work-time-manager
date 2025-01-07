@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\WorkEntry\Application\User\End;
+namespace App\WorkEntry\Application\User\Finish;
 
 use App\Shared\Application\Command\CommandHandlerInterface;
 use App\Shared\Application\Event\DomainEventPublisher;
@@ -19,9 +19,6 @@ final readonly class UserFinishWorkEntryCommandHandler implements CommandHandler
     {
     }
 
-    /**
-     * @throws Throwable
-     */
     public function __invoke(UserFinishWorkEntryCommand $command): void
     {
         $this->workEntryFinisher->finish(Uuid::from($command->workEntryId()), Uuid::from($command->userId()));

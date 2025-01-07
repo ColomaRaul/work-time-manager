@@ -4,7 +4,10 @@ namespace App\WorkEntry\Domain\Finisher;
 
 use App\Shared\Domain\DomainActions;
 use App\Shared\Domain\ValueObject\Uuid;
+use App\WorkEntry\Domain\Exception\WorkEntryNotFoundException;
+use App\WorkEntry\Domain\Exception\WorkEntryNotPermissionToFinishException;
 use App\WorkEntry\Domain\WorkEntryRepositoryInterface;
+use Throwable;
 
 final class WorkEntryFinisher extends DomainActions
 {
@@ -16,12 +19,12 @@ final class WorkEntryFinisher extends DomainActions
     {
         try {
             $workEntry = $this->repository->byId($workEntryId->value());
-        } catch (\Exception $e) {
-            throw new \Exception('Error getting work entry');
+        } catch (Throwable $e) {
+            throw new WorkEntryNotFoundException();
         }
 
         if (!$workEntry->userId()->equals($userId) ) {
-            throw new \Exception('User does not have permission to finish this work entry');
+            throw new WorkEntryNotPermissionToFinishException();
         }
 
         $workEntry->finish();

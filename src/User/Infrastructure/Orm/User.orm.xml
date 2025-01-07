@@ -10,7 +10,7 @@
         </indexes>
         <id name="id" type="App\Shared\Infrastructure\Orm\UuidType" />
         <field name="name" />
-        <field name="email" />
+        <field name="email" type="App\User\Infrastructure\Orm\UserEmailType" />
         <field name="password" />
         <field name="role" type="App\User\Infrastructure\Orm\UserRoleType"/>
         <field name="createdAt" type="App\Shared\Infrastructure\Orm\DateTimeType"/>

@@ -15,6 +15,10 @@ final class UserDeleter extends DomainActions
     public function delete(string $id): void
     {
         $user = $this->repository->byId($id);
+        if ($user === null) {
+            throw new \Exception('User not found');
+        }
+
         $user->delete();
 
         $this->repository->save($user);

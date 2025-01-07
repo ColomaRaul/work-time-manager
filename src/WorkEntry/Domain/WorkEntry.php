@@ -11,6 +11,7 @@ use App\WorkEntry\Domain\Event\WorkEntryFinished;
 use App\WorkEntry\Domain\Event\WorkEntryStartDateUpdated;
 use App\WorkEntry\Domain\Event\WorkEntryStarted;
 use App\WorkEntry\Domain\Event\WorkEntryUserIdUpdated;
+use App\WorkEntry\Domain\Exception\WorkEntryIsFinishedException;
 use DateTimeImmutable;
 
 final class WorkEntry extends AggregateRoot implements \JsonSerializable
@@ -75,7 +76,7 @@ final class WorkEntry extends AggregateRoot implements \JsonSerializable
     public function finish(): void
     {
         if (null !== $this->workEntryTime->end()) {
-//            throw new WorkEntryIsFinished();
+            throw new WorkEntryIsFinishedException();
         }
 
         $this->workEntryTime = $this->workEntryTime()->updateEnd(new DateTimeImmutable());

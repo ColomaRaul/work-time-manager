@@ -4,6 +4,7 @@ namespace App\User\Domain\Updater;
 
 use App\Shared\Domain\DomainActions;
 use App\Shared\Domain\PasswordHasherInterface;
+use App\User\Domain\UserEmail;
 use App\User\Domain\UserRepositoryInterface;
 
 final class UserUpdater extends DomainActions
@@ -23,7 +24,7 @@ final class UserUpdater extends DomainActions
         $user = $this->repository->byId($id);
 
         $user->updateName($name);
-        $user->updateEmail($email);
+        $user->updateEmail(UserEmail::from($email));
         $user->updatePassword($password, $this->passwordHasher);
 
         $this->repository->save($user);

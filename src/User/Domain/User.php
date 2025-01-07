@@ -5,6 +5,7 @@ namespace App\User\Domain;
 use App\Shared\Domain\AggregateRoot;
 use App\Shared\Domain\PasswordHasherInterface;
 use App\Shared\Domain\ValueObject\Uuid;
+use App\User\Domain\Event\UserAdminCreated;
 use App\User\Domain\Event\UserCreated;
 use App\User\Domain\Event\UserDeleted;
 use App\User\Domain\Event\UserEmailUpdated;
@@ -17,7 +18,7 @@ final class User extends AggregateRoot implements \JsonSerializable
 {
     public function __construct(
         private readonly Uuid $id,
-        private string $email,
+        private UserEmail $email,
         private string $password,
         private string $name,
         private UserRole $role,
@@ -36,7 +37,7 @@ final class User extends AggregateRoot implements \JsonSerializable
         $id = Uuid::random();
         $user = new self(
             $id,
-            $email,
+            UserEmail::from($email),
             $passwordHasher->hash($password),
             $name,
             UserRole::USER,
@@ -45,6 +46,36 @@ final class User extends AggregateRoot implements \JsonSerializable
         );
 
         $user->saveDomainEvent(UserCreated::from(
+            $id->value(),
+            (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+            [
+                'aggregateId' => $id->value(),
+                'email' => $email,
+                'name' => $name,
+            ]
+        ));
+
+        return $user;
+    }
+
+    public static function createAdmin(
+        Uuid $id,
+        string $email,
+        string $password,
+        string $name,
+        PasswordHasherInterface $passwordHasher,
+    ): self {
+        $user = new self(
+            $id,
+            UserEmail::from($email),
+            $passwordHasher->hash($password),
+            $name,
+            UserRole::ADMIN,
+            new DateTimeImmutable(),
+            new DateTimeImmutable(),
+        );
+
+        $user->saveDomainEvent(UserAdminCreated::from(
             $id->value(),
             (new DateTimeImmutable())->format('Y-m-d H:i:s'),
             [
@@ -75,9 +106,9 @@ final class User extends AggregateRoot implements \JsonSerializable
         ));
     }
 
-    public function updateEmail(string $email): void
+    public function updateEmail(UserEmail $email): void
     {
-        if ($this->email === $email) {
+        if ($this->email->equals($email)) {
             return;
         }
 
@@ -88,7 +119,7 @@ final class User extends AggregateRoot implements \JsonSerializable
             $this->id->value(),
             (new DateTimeImmutable())->format('Y-m-d H:i:s'),
             [
-                'email' => $email,
+                'email' => $email->value(),
             ]
         ));
     }
@@ -125,12 +156,17 @@ final class User extends AggregateRoot implements \JsonSerializable
         ));
     }
 
+    public function isDeleted(): bool
+    {
+        return $this->deletedAt !== null;
+    }
+
     public function id(): Uuid
     {
         return $this->id;
     }
 
-    public function email(): string
+    public function email(): UserEmail
     {
         return $this->email;
     }
@@ -170,7 +206,7 @@ final class User extends AggregateRoot implements \JsonSerializable
         return [
             'id' => $this->id->value(),
             'name' => $this->name(),
-            'email' => $this->email(),
+            'email' => $this->email()->value(),
             'role' => $this->role()->value,
             'active' => null === $this->deletedAt(),
         ];

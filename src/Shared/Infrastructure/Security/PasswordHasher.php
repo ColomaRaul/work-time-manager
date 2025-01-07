@@ -7,7 +7,7 @@ use App\User\Domain\User;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface as SymfonyPasswordHasherInterface;
 
-final readonly class PasswordHasher implements PasswordHasherInterface
+readonly class PasswordHasher implements PasswordHasherInterface
 {
     private SymfonyPasswordHasherInterface $hasher;
 
